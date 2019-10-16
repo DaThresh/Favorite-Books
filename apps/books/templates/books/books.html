@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Books</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+    {% include "books/header.html" %}
+
+    <div class="container mt-5">
+        {% if messages %}
+            <div class="row justify-content-center" id="message-box">
+                {% for msg in messages %}
+                    <p class="{{ msg.tags }}">{{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-5">
+                <h2 class='text-center mb-3'>Add a Favorite Book</h2>
+                <form action="/books/add" method="POST">
+                    {% csrf_token %}
+                    <div class="form-row mb-2">
+                        <label class="col-3" for="title">Title:</label>
+                        <input type="text" class="form-control col-9" name="title" id="title">
+                    </div>
+                    <div class="form-row mb-2">
+                        <label class="col-3" for="description">Description:</label>
+                        <textarea rows="8" class="form-control col-9" name="description" id="description"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-9 offset-3 text-right">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-6 offset-1">
+                <h2 class="row mb-3">All Books</h2>
+                {% for book in books %}
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <h4 class="row"><a class="link" href="/books/{{ book.id }}">{{ book.title }}</a></h4>
+                            <h6 class="row ml-2">(added by {{ book.uploaded_by.first_name }} {{ book.uploaded_by.last_name }})</h6>
+                            {% if user in book.users_who_like.all %}
+                                <p class="row ml-2 font-italic">this is one of your favorites</p>
+                            {% else %}
+                                <p class="row ml-2"><a class="link" href="/favorite/{{ book.id }}">Add to Favorites</a></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        
+        var inputs = $('input, textarea');
+        var messages = $('#message-box').children();
+        for (var i = 0; i < inputs.length; i++){
+            var fieldName = $(inputs[i]).attr('name');
+            for (var j = 0; j < messages.length; j++){
+                if ($(messages[j]).hasClass(fieldName)){
+                    $(messages[j]).addClass('col-9');
+                    $(messages[j]).addClass('offset-3');
+                    $(inputs[i]).after(messages[j]);
+                }
+            }
+        }
+    
+    </script>
+    
+</body>
+</html>

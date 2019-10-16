@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+    {% include "books/header.html" %}
+
+    <div class="container mt-5">
+        {% if messages %}
+            <div class="row justify-content-center" id="message-box">
+                {% for msg in messages %}
+                    <p class="{{ msg.tags }}">{{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-5">
+                <h2 class="mb-3 row">Your profile</h2>
+                <p class="row">Full name: {{ user.first_name }} {{ user.last_name }}</p>
+                <p class="row">Account email: {{ user.email }}</p>
+                <p class="row">Last account update: {{ user.updated_at }}</p>
+                <p class="row">Uploaded Books: {{ user.books_uploaded.count }}</p>
+                <p class="row">Books that you favorited: {{ user.books_liked.count }}</p>
+            </div>
+            <div class="col-6 offset-1">
+                <h2 class="mb-3">Books that you love:</h2>
+                <ul>
+                    {% for book in books %}
+                        <li>{{ book.title }} <span class="ml-2"><a class="link" href="/unfavorite/{{ book.id }}">Un-favorite</a></span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

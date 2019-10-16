@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Book {{ book.id }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+    {% include "books/header.html" %}
+
+    <div class="container mt-5">
+        {% if messages %}
+            <div class="row justify-content-center" id="message-box">
+                {% for msg in messages %}
+                    <p class="{{ msg.tags }}">{{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-5">
+                {% if request.session.id is book.uploaded_by.id %}
+                    <form action="/books/update/{{ book.id }}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-row mb-2">
+                            <input type="text" class="form-control" name="title" value="{{ book.title }}">
+                        </div>
+                        <div class="form-row">
+                            <p class="font-italic">Added by: {{ book.uploaded_by.first_name }} {{ book.uploaded_by.last_name }}</p>
+                        </div>
+                        <div class="form-row">
+                            <p>Added on: {{ book.created_at }}</p>
+                        </div>
+                        <div class="form-row">
+                            <p>Last updated on: {{ book.updated_at }}</p>
+                        </div>
+                        <div class="form-row mb-2">
+                            <label class="col-3" for="description">Description:</label>
+                            <textarea rows="8" class="form-control col-9" name="description" id="description">{{ book.description }}</textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-9 offset-3 text-center">
+                                <button class="btn btn-secondary" type="submit">Update</button>
+                                <a class="btn btn-danger" href="/books/delete/{{ book.id }}">Delete</a>
+                            </div>
+                        </div>
+                    </form>
+                {% else %}
+                    <h2 class="row mb-3">{{ book.title }}</h2>
+                    <p class="row">Added by: {{ book.uploaded_by.first_name }} {{ book.uploaded_by.last_name }}</p>
+                    <p class="row">Added on: {{ book.created_at }}</p>
+                    <p class="row">Last updated on: {{ book.updated_at }}</p>
+                    <div class="row">
+                        <h6 class="col-3">Description</h6>
+                        <p class="col-9">{{ book.description }}</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-6 offset-1">
+                <h2 class="mb-3">Users Who Like This Book:</h2>
+                <ul>
+                    {% for user in book.users_who_like.all %}
+                        {% if user.id is request.session.id %}
+                            <li>{{ user.first_name }} {{ user.last_name }} <span class="ml-2"><a class="link" href="/unfavorite/{{ book.id }}">Un-Favorite</a></span></li>
+                        {% else %}
+                            <li>{{ user.first_name }} {{ user.last_name }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% if request.session.id is book.uploaded_by.id %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        
+        var inputs = $('input');
+        var messages = $('#message-box').children();
+        for (var i = 0; i < inputs.length; i++){
+            var fieldName = $(inputs[i]).attr('name');
+            for (var j = 0; j < messages.length; j++){
+                if ($(messages[j]).hasClass(fieldName)){
+                    $(messages[j]).addClass('col-9');
+                    $(messages[j]).addClass('offset-3');
+                    $(inputs[i]).after(messages[j]);
+                }
+            }
+        }
+    
+    </script>
+
+    {% endif %}
+    
+</body>
+</html>

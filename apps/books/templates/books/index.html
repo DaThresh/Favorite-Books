@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login and Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+    <div class="container mt-5">
+        {% if messages %}
+            <div class="row justify-content-center" id="message-box">
+                {% for msg in messages %}
+                    <p class="{{ msg.tags }}">{{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-6">
+                <h2 class="row justify-content-center">Registration</h2>
+                <form action="/register" method="POST">
+                    {% csrf_token %}
+                    <div class="form-row mb-2">
+                        <label class="col-3 mt-1" for="first_name">First name:</label>
+                        <input type="text" class="form-control col-9" name="first_name" id="first_name">
+                    </div>
+                    <div class="form-row mb-2">
+                        <label class="col-3 mt-1" for="last_name">Last Name:</label>
+                        <input type="text" class="form-control col-9" name="last_name" id="last_name">
+                    </div>
+                    <div class="form-row mb-2">
+                        <label class="col-3 mt-1" for="email">Email:</label>
+                        <input type="email" class="form-control col-9" name="email" id="email">
+                    </div>
+                    <div class="form-row mb-2">
+                        <label class="col-3 mt-1" for="password">Password:</label>
+                        <input type="password" class="form-control col-9" name="password" id="password">
+                    </div>
+                    <div class="form-row mb-2">
+                        <label class="col-3 mt-1" for="conf_password">Confirm Pass:</label>
+                        <input type="password" class="form-control col-9" name="conf_password" id="conf_password">
+                    </div>
+                    <div class="form-row justify-content-center">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-6">
+                <h2 class="row justify-content-center">Login</h2>
+                <form action="/login" method="POST">
+                    {% csrf_token %}
+                    <div class="form-row mb-2">
+                        <label class="col-3 mt-1" for="lemail">Email:</label>
+                        <input type="email" class="form-control col-9" name="lemail" id="lemail">
+                    </div>
+                    <div class="form-row mb-2">
+                        <label class="col-3 mt-1" for="lpassword">Password:</label>
+                        <input type="password" class="form-control col-9" name="lpassword" id="lpassword">
+                    </div>
+                    <div class="form-row justify-content-center">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        
+        var inputs = $('input');
+        var messages = $('#message-box').children();
+        for (var i = 0; i < inputs.length; i++){
+            var fieldName = $(inputs[i]).attr('name');
+            for (var j = 0; j < messages.length; j++){
+                if ($(messages[j]).hasClass(fieldName)){
+                    $(messages[j]).addClass('col-9');
+                    $(messages[j]).addClass('offset-3');
+                    $(inputs[i]).after(messages[j]);
+                }
+            }
+        }
+    
+    </script>
+    
+</body>
+</html>
